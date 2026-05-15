@@ -9,8 +9,8 @@ export default function DarkModeToggle() {
       title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
       className={`relative w-14 h-7 rounded-full transition-all duration-500 ${
         dark
-          ? 'bg-espresso-700 shadow-[inset_0_0_6px_rgba(147,197,253,0.25)]'
-          : 'bg-amber-200 shadow-[inset_0_0_6px_rgba(251,191,36,0.25)]'
+          ? 'bg-espresso-700 border border-espresso-600 shadow-[inset_0_0_6px_rgba(147,197,253,0.25)]'
+          : 'bg-amber-200 border border-amber-400 shadow-[inset_0_0_6px_rgba(251,191,36,0.25)]'
       }`}
     >
       {/* Sliding knob */}

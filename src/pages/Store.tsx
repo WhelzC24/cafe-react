@@ -20,6 +20,13 @@ export default function StorePage() {
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', phone: '', notes: '' })
   const orderRef = useRef<HTMLElement>(null)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const { cart, cartItems, cartCount, cartTotal, cartTotalFmt, addToCart, removeFromCart, clearCart } = useCart()
 
@@ -82,18 +89,38 @@ export default function StorePage() {
   return (
     <div className="min-h-screen bg-cream font-body dark:bg-espresso-900">
       {/* ── NAVBAR ──────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-espresso-100">
+      <header className={`sticky top-0 z-40 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/80 backdrop-blur border-b border-espresso-100'
+            : 'bg-transparent border-b border-transparent'
+        }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-2 font-display font-semibold text-espresso-900 text-lg">
+          <a href="#home" className={`flex items-center gap-2 font-display font-semibold text-lg transition-colors duration-300 ${
+              scrolled ? 'text-espresso-900' : 'text-cream'
+            }`}>
             <span className="text-2xl">☕</span>
             Cozy Corner <em>Café</em>
           </a>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-espresso-700">
-            <a href="#menu"  className="hover:text-espresso-900 transition-colors">Menu</a>
-            <a href="#about" className="hover:text-espresso-900 transition-colors">About</a>
-            <a href="#contact" className="hover:text-espresso-900 transition-colors">Contact</a>
-            <a href="#order" className="btn-primary btn-sm">Order Now</a>
-            <Link to="/login" className="text-espresso-400 hover:text-espresso-700 transition-colors text-xs">Staff Login</Link>
+          <nav className={`hidden md:flex items-center gap-6 text-sm font-medium transition-colors duration-300 ${
+              scrolled ? 'text-espresso-700' : 'text-cream/80'
+            }`}>
+            <a href="#menu"  className={`transition-colors ${
+                scrolled ? 'hover:text-espresso-900' : 'hover:text-cream'
+              }`}>Menu</a>
+            <a href="#about" className={`transition-colors ${
+                scrolled ? 'hover:text-espresso-900' : 'hover:text-cream'
+              }`}>About</a>
+            <a href="#contact" className={`transition-colors ${
+                scrolled ? 'hover:text-espresso-900' : 'hover:text-cream'
+              }`}>Contact</a>
+            <a href="#order" className={`btn-primary btn-sm ${
+                scrolled ? '' : 'bg-cream text-[#3e1f0a] hover:bg-cream/90'
+              }`}>Order Now</a>
+            <Link to="/login" className={`transition-colors text-xs ${
+                scrolled
+                  ? 'text-espresso-400 hover:text-espresso-700'
+                  : 'text-cream/60 hover:text-cream'
+              }`}>Staff Login</Link>
             <DarkModeToggle />
           </nav>
           {/* Mobile actions */}
@@ -101,7 +128,11 @@ export default function StorePage() {
             <DarkModeToggle />
             <button
               onClick={() => setMobileNavOpen(true)}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-espresso-700 hover:bg-espresso-100 transition-colors dark:text-espresso-300 dark:hover:bg-espresso-700"
+              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
+                scrolled
+                  ? 'text-espresso-700 hover:bg-espresso-100 dark:text-espresso-300 dark:hover:bg-espresso-700'
+                  : 'text-cream/80 hover:text-cream'
+              }`}
               aria-label="Open menu"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -112,7 +143,11 @@ export default function StorePage() {
           {/* Cart button */}
           <button
             onClick={() => setCartOpen(!cartOpen)}
-            className="relative btn-ghost btn-sm"
+            className={`relative btn-sm border-0 transition-colors duration-300 ${
+              scrolled
+                ? 'btn-ghost'
+                : 'text-cream hover:text-cream/80'
+            }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1"/>
@@ -171,10 +206,10 @@ export default function StorePage() {
       )}
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section id="home" className="relative h-[85vh] min-h-[520px] flex items-center justify-center overflow-hidden">
+      <section id="home" className="relative -mt-16 h-[85vh] min-h-[520px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 hero-bg" />
         <div className="absolute inset-0 bg-gradient-to-b from-espresso-900/70 via-espresso-900/50 to-cream dark:to-espresso-900" />
-        <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
+        <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-16">
           <p className="text-espresso-200 text-sm uppercase tracking-widest mb-4">Est. 2026 · Specialty Coffee</p>
           <h1 className="font-display text-5xl md:text-7xl text-cream mb-6 leading-tight">
             Where Every Cup<br /><em>Tells a Story</em>
