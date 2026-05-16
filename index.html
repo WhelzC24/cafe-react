@@ -6,6 +6,15 @@
     <title>Cozy Corner Café</title>
     <meta name="description" content="Handcrafted coffee, fresh-baked pastries, and warm conversations." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script>
+    (function() {
+      var dark = localStorage.getItem('darkMode');
+      if (dark === 'true' || (dark === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      document.documentElement.classList.add('theme-transition-ready');
+    })();
+  </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
