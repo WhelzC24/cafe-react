@@ -7,7 +7,7 @@ interface AuthContextValue {
   profile: Profile | null
   session: Session | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
+  signIn: (username: string, password: string) => Promise<{ data: unknown; error: unknown }>
   signOut: () => Promise<void>
 }
 
