@@ -35,7 +35,7 @@ export const QUICK_CHATS: QuickChatDef[] = [
   {
     label: 'Contact us',
     icon: '📞',
-    botReply: '📞 **Phone:** +63 XXX-XXX-XXXX\n✉️ **Email:** cozycorner@example.com\n\nWe\'d love to hear from you!',
+    botReply: '📞 **Phone:** 09361679546\n✉️ **Email:** wlaniba330@gmail.com\n\nWe\'d love to hear from you!',
   },
 ]
 
