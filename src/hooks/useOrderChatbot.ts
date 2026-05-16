@@ -4,6 +4,7 @@ import type { ChatMessage, ChatStep, ChatOrderItem } from '../types'
 import { QUICK_CHATS, getCategoryReply, GREETING } from '../data/chat-templates'
 
 const CATEGORIES = ['Coffee', 'Cold Drinks', 'Hot Drinks', 'Pastries', 'Food', 'Other']
+const BACK_CHIP = '🏠 Back to main menu'
 
 let msgId = 0
 
@@ -13,6 +14,8 @@ export function useOrderChatbot() {
   ])
   const [step, setStep] = useState<ChatStep>('idle')
   const [open, setOpen] = useState(false)
+  const [botTyping, setBotTyping] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const [products, setProducts] = useState<{ name: string; price: number; description?: string; category: string }[]>([])
   const productsLoaded = useRef(false)
 
@@ -33,21 +36,40 @@ export function useOrderChatbot() {
     setMessages(prev => [...prev, { id: String(++msgId), role, text, chips, timestamp: new Date() }])
   }, [])
 
+  const replyLater = useCallback(async (text: string, chips?: string[]) => {
+    setBotTyping(true)
+    const delay = Math.min(600 + text.length * 2.5, 2200)
+    await new Promise(resolve => setTimeout(resolve, delay))
+    addMessage('bot', text, chips)
+    setBotTyping(false)
+    if (!open) setUnreadCount(prev => prev + 1)
+  }, [addMessage, open])
+
   const activeChips = useCallback(() => {
     return ['all', ...new Set(products.map(p => p.category))]
   }, [products])
 
+  const menuChips = useCallback(() => {
+    return [...activeChips(), BACK_CHIP]
+  }, [activeChips])
+
   const handleChipClick = useCallback(async (label: string) => {
+    if (label === BACK_CHIP) {
+      addMessage('user', label)
+      await replyLater('Going back to main menu...', QUICK_CHATS.map(c => c.label))
+      return
+    }
+
     const chat = QUICK_CHATS.find(c => c.label === label)
     if (chat) {
       addMessage('user', label)
       if (chat.action === 'track_order') {
-        addMessage('bot', chat.botReply)
+        await replyLater(chat.botReply)
         setStep('tracking')
       } else if (chat.action === 'view_menu') {
-        addMessage('bot', chat.botReply, activeChips())
+        await replyLater(chat.botReply, menuChips())
       } else {
-        addMessage('bot', chat.botReply)
+        await replyLater(chat.botReply)
       }
       return
     }
@@ -55,10 +77,10 @@ export function useOrderChatbot() {
     if (CATEGORIES.includes(label) || label === 'all') {
       addMessage('user', label === 'all' ? 'Show all items' : `Show ${label}`)
       const reply = getCategoryReply(label, products)
-      addMessage('bot', reply, activeChips())
+      await replyLater(reply, menuChips())
       return
     }
-  }, [addMessage, activeChips, products])
+  }, [addMessage, activeChips, menuChips, products])
 
   const handleUserInput = useCallback(async (text: string) => {
     const trimmed = text.trim()
@@ -74,7 +96,7 @@ export function useOrderChatbot() {
       })
 
       if (error || !data) {
-        addMessage('bot', "I couldn't find that order. Please double-check your Order ID and try again.", [
+        await replyLater("I couldn't find that order. Please double-check your Order ID and try again.", [
           ...QUICK_CHATS.map(c => c.label),
         ])
         setStep('idle')
@@ -103,8 +125,7 @@ export function useOrderChatbot() {
         .map((i: ChatOrderItem) => `• ${i.quantity}× **${i.product_name}** — ₱${Number(i.line_total).toFixed(2)}`)
         .join('\n')
 
-      addMessage(
-        'bot',
+      await replyLater(
         `📋 **Order #${order.id.slice(0, 8).toUpperCase()}**\n\n` +
           `${statusEmoji[order.status] ?? '📦'} **Status:** ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}\n\n` +
           `**Items:**\n${itemsList}\n\n` +
@@ -114,7 +135,7 @@ export function useOrderChatbot() {
       )
       setStep('result')
     } else {
-      addMessage('bot', "I'm not sure how to help with that. Try one of these options:", [
+      await replyLater("I'm not sure how to help with that. Try one of these options:", [
         ...QUICK_CHATS.map(c => c.label),
       ])
     }
@@ -127,10 +148,15 @@ export function useOrderChatbot() {
     setStep('idle')
   }, [])
 
-  const toggleOpen = useCallback(() => setOpen(prev => !prev), [])
+  const toggleOpen = useCallback(() => {
+    setOpen(prev => !prev)
+    setUnreadCount(0)
+  }, [])
 
   return {
     messages,
+    botTyping,
+    unreadCount,
     step,
     open,
     handleChipClick,
