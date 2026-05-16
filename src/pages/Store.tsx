@@ -92,7 +92,7 @@ export default function StorePage() {
       <header className={`sticky top-0 z-40 transition-all duration-300 ${
           scrolled
             ? 'bg-white/80 backdrop-blur border-b border-espresso-100'
-            : 'bg-transparent border-b border-transparent'
+            : 'bg-transparent'
         }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="#home" className={`flex items-center gap-2 font-display font-semibold text-lg transition-colors duration-300 ${
@@ -123,16 +123,35 @@ export default function StorePage() {
               }`}>Staff Login</Link>
             <DarkModeToggle />
           </nav>
-          {/* Mobile actions */}
-          <div className="flex md:hidden items-center gap-2">
-            <DarkModeToggle />
+
+          {/* Mobile sidebar + cart */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCartOpen(!cartOpen)}
+              className={`relative btn-sm border-0 transition-colors duration-300 ${
+                scrolled
+                  ? 'btn-ghost'
+                  : 'text-cream hover:text-cream/80'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-espresso-700 text-cream text-xs rounded-full flex items-center justify-center font-semibold">
+                  {cartCount}
+                </span>
+              )}
+            </button>
             <button
               onClick={() => setMobileNavOpen(true)}
               className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
                 scrolled
                   ? 'text-espresso-700 hover:bg-espresso-100 dark:text-espresso-300 dark:hover:bg-espresso-700'
                   : 'text-cream/80 hover:text-cream'
-              }`}
+              } md:hidden`}
               aria-label="Open menu"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -140,26 +159,6 @@ export default function StorePage() {
               </svg>
             </button>
           </div>
-          {/* Cart button */}
-          <button
-            onClick={() => setCartOpen(!cartOpen)}
-            className={`relative btn-sm border-0 transition-colors duration-300 ${
-              scrolled
-                ? 'btn-ghost'
-                : 'text-cream hover:text-cream/80'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"/>
-              <circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-espresso-700 text-cream text-xs rounded-full flex items-center justify-center font-semibold">
-                {cartCount}
-              </span>
-            )}
-          </button>
         </div>
       </header>
 
@@ -186,7 +185,7 @@ export default function StorePage() {
                   key={label}
                   href={href}
                   onClick={() => setMobileNavOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-espresso-700 hover:bg-espresso-100 transition-colors dark:text-espresso-200 dark:hover:bg-espresso-700"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-espresso-700 hover:bg-espresso-100 transition-colors dark:text-cream dark:hover:bg-espresso-700"
                 >
                   <span className="text-lg">{icon}</span>
                   {label}
@@ -196,10 +195,16 @@ export default function StorePage() {
               <Link
                 to="/login"
                 onClick={() => setMobileNavOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-espresso-500 hover:bg-espresso-100 transition-colors dark:text-espresso-300 dark:hover:bg-espresso-700"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-espresso-500 hover:bg-espresso-100 transition-colors dark:text-cream/70 dark:hover:bg-espresso-700"
               >
                 🔐 Staff Login
               </Link>
+              <div className="px-4 py-3 border-t border-espresso-100 dark:border-espresso-700">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-espresso-500 dark:text-cream/70">Dark Mode</span>
+                  <DarkModeToggle />
+                </div>
+              </div>
             </nav>
           </div>
         </div>
@@ -208,20 +213,20 @@ export default function StorePage() {
       {/* ── HERO ─────────────────────────────────────── */}
       <section id="home" className="relative -mt-16 h-[85vh] min-h-[520px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 hero-bg" />
-        <div className="absolute inset-0 bg-gradient-to-b from-espresso-900/70 via-espresso-900/50 to-cream dark:to-espresso-900" />
+        <div className="absolute inset-0 bg-gradient-to-b from-espresso-900/70 via-espresso-900/50 to-espresso-900" />
         <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-16">
-          <p className="text-espresso-200 text-sm uppercase tracking-widest mb-4">Est. 2026 · Specialty Coffee</p>
+          <p className="text-espresso-200 dark:text-cream/60 text-sm uppercase tracking-widest mb-4">Est. 2026 · Specialty Coffee</p>
           <h1 className="font-display text-5xl md:text-7xl text-cream mb-6 leading-tight">
             Where Every Cup<br /><em>Tells a Story</em>
           </h1>
-          <p className="text-espresso-100 text-lg md:text-xl mb-8 max-w-xl mx-auto">
+          <p className="text-espresso-100 dark:text-cream/70 text-lg md:text-xl mb-8 max-w-xl mx-auto">
             Handcrafted coffee, fresh-baked pastries, and warm conversations — your perfect third place.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <a href="#menu"  className="btn-primary">Explore Our Menu</a>
             <a href="#order" className="btn bg-white/20 text-white border border-white/30 hover:bg-white/30">Order for Pickup</a>
           </div>
-          <div className="flex flex-wrap gap-4 justify-center mt-8 text-sm text-espresso-200">
+          <div className="flex flex-wrap gap-4 justify-center mt-8 text-sm text-espresso-200 dark:text-espresso-400">
             <span>⭐ 4.9 Rating</span>
             <span>🌱 Ethically Sourced</span>
             <span>🥐 Baked Daily</span>
@@ -241,7 +246,7 @@ export default function StorePage() {
             <div key={title} className="flex items-center gap-3">
               <span className="text-2xl">{icon}</span>
               <div>
-                <div className="font-semibold text-espresso-100">{title}</div>
+                <div className="font-semibold text-espresso-100 dark:text-espresso-400">{title}</div>
                 <div className="text-espresso-400 text-xs">{sub}</div>
               </div>
             </div>
@@ -297,9 +302,9 @@ export default function StorePage() {
                     </div>
                   )}
                   <div className="p-4">
-                    <div className="text-xs text-espresso-400 mb-1">{product.category}</div>
+                    <div className="text-xs text-espresso-400 dark:text-espresso-500 mb-1">{product.category}</div>
                     <h3 className="font-display font-semibold text-espresso-900 mb-1">{product.name}</h3>
-                    <p className="text-xs text-espresso-500 mb-3 line-clamp-2">{product.description}</p>
+                    <p className="text-xs text-espresso-500 dark:text-espresso-600 mb-3 line-clamp-2">{product.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-espresso-700">{fmt(product.price)}</span>
                       <button className="w-8 h-8 rounded-full bg-espresso-900 text-cream flex items-center justify-center text-lg hover:bg-espresso-700 transition-colors">
@@ -317,9 +322,9 @@ export default function StorePage() {
       {/* ── ABOUT ────────────────────────────────────── */}
       <section id="about" className="py-20 bg-espresso-900 text-cream">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-espresso-400 text-sm uppercase tracking-widest mb-4">Our Story</p>
+           <p className="text-espresso-400 dark:text-espresso-500 text-sm uppercase tracking-widest mb-4">Our Story</p>
           <h2 className="font-display text-4xl mb-6">A Corner Made for You</h2>
-          <p className="text-espresso-200 text-lg leading-relaxed max-w-2xl mx-auto">
+           <p className="text-espresso-200 dark:text-espresso-400 text-lg leading-relaxed max-w-2xl mx-auto">
             Nestled in the heart of Loon, Bohol, Cozy Corner Café was born from a simple belief:
             that a great cup of coffee can transform a moment. We source single-origin beans,
             bake fresh pastries every morning, and pour every drink with care — because you deserve more
@@ -402,7 +407,7 @@ export default function StorePage() {
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-espresso-900 truncate">{product.name}</p>
-                        <p className="text-xs text-espresso-500">{fmt(product.price)}</p>
+                        <p className="text-xs text-espresso-500 dark:text-espresso-600">{fmt(product.price)}</p>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button
@@ -427,7 +432,7 @@ export default function StorePage() {
               <div className="card p-6">
                 <h3 className="font-display text-xl mb-4">Your Order</h3>
                 {cartItems.length === 0 ? (
-                  <p className="text-espresso-400 text-sm text-center py-4">No items added yet.</p>
+                  <p className="text-espresso-400 dark:text-espresso-500 text-sm text-center py-4">No items added yet.</p>
                 ) : (
                   <>
                     <div className="space-y-2 mb-4">
@@ -495,7 +500,7 @@ export default function StorePage() {
               <div key={title} className="card p-6">
                 <div className="text-3xl mb-3">{icon}</div>
                 <h3 className="font-semibold text-espresso-900 mb-1">{title}</h3>
-                <p className="text-sm text-espresso-500 whitespace-pre-line">{info}</p>
+                <p className="text-sm text-espresso-500 dark:text-espresso-600 whitespace-pre-line">{info}</p>
               </div>
             ))}
           </div>
@@ -503,10 +508,10 @@ export default function StorePage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────── */}
-      <footer className="bg-espresso-900 text-espresso-400 py-8 text-center text-sm">
+      <footer className="bg-espresso-900 dark:text-espresso-500 text-espresso-400 py-8 text-center text-sm">
         <p className="font-display text-cream text-lg mb-1">Cozy Corner Café</p>
         <p>© {new Date().getFullYear()} · Cuasi, Loon, Bohol</p>
-        <Link to="/login" className="mt-2 inline-block text-xs text-espresso-500 hover:text-espresso-300 transition-colors">
+        <Link to="/login" className="mt-2 inline-block text-xs text-espresso-500 dark:text-espresso-600 hover:text-espresso-300 transition-colors">
           Staff Login
         </Link>
       </footer>
@@ -524,12 +529,12 @@ export default function StorePage() {
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {cartItems.length === 0 ? (
-                <p className="text-center text-espresso-400 py-8">Your cart is empty.</p>
+                <p className="text-center text-espresso-400 dark:text-espresso-500 py-8">Your cart is empty.</p>
               ) : cartItems.map(({ product, qty }) => (
                 <div key={product.id} className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{product.name}</p>
-                    <p className="text-xs text-espresso-500">{fmt(product.price)} each</p>
+                    <p className="text-xs text-espresso-500 dark:text-espresso-600">{fmt(product.price)} each</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => removeFromCart(product.id)} className="w-7 h-7 rounded-full border border-espresso-300 flex items-center justify-center">−</button>
