@@ -45,12 +45,12 @@ export default function LoginPage() {
           <h1 className="font-display text-5xl text-cream leading-tight mb-4">
             Cozy Corner<br /><em>Café</em>
           </h1>
-          <p className="text-espresso-200 text-lg mb-8">
+          <p className="text-espresso-200 dark:text-espresso-400 text-lg mb-8">
             Staff & Admin portal. Manage your menu, orders, and team from one place.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-espresso-300 hover:text-cream transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-espresso-300 dark:text-espresso-400 hover:text-cream transition-colors text-sm"
           >
             ← View the customer menu
           </Link>
