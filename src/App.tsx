@@ -5,6 +5,7 @@ import StorePage from './pages/Store'
 import LoginPage from './pages/Login'
 import AdminDashboard from './pages/admin/Dashboard'
 import StaffManagement from './pages/admin/StaffManagement'
+import AdminSettings from './pages/admin/Settings'
 import StoreDashboard from './pages/staff/StoreDashboard'
 import ChangePassword from './pages/ChangePassword'
 
@@ -37,6 +38,7 @@ function AppRoutes() {
       <Route path="/change-password" element={<ProtectedRoute allowedRoles={['admin', 'staff']}><ChangePassword /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/staff" element={<ProtectedRoute allowedRoles={['admin']}><StaffManagement /></ProtectedRoute>} />
+      <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
