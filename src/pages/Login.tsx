@@ -5,7 +5,7 @@ import { useAuthContext } from '../context/AuthContext'
 export default function LoginPage() {
   const { signIn, profile } = useAuthContext()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,10 +20,10 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const { error: err } = await signIn(email, password)
+    const { error: err } = await signIn(username, password)
     setLoading(false)
     if (err) {
-      setError('Invalid email or password. Please try again.')
+      setError('Invalid username or password. Please try again.')
       return
     }
     // profile loaded by useAuth listener — redirect
@@ -69,13 +69,13 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
-                type="email"
+                type="text"
                 className="input"
-                placeholder="Email address"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                placeholder="Username"
+                value={username}
+                onChange={e => setUsername(e.target.value.toLowerCase())}
                 required
-                autoComplete="email"
+                autoComplete="username"
               />
             </div>
             <div>
