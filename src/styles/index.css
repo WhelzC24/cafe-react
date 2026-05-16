@@ -7,6 +7,15 @@
     scroll-behavior: smooth;
   }
 
+  html.theme-transition-ready,
+  html.theme-transition-ready *,
+  html.theme-transition-ready *::before,
+  html.theme-transition-ready *::after {
+    transition-property: background-color, color, border-color, fill, stroke;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+  }
+
   body {
     @apply font-body antialiased;
     color: #3e1f0a;
@@ -268,7 +277,7 @@
 }
 
 .hero-bg {
-  background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1400&q=80') center/cover no-repeat;
+  background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1400&q=80') center 30%/cover no-repeat;
 }
 
 .menu-grid {
