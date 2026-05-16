@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthContext } from '../context/AuthContext'
+import PasswordInput from '../components/ui/PasswordInput'
 
 export default function LoginPage() {
   const { signIn, profile } = useAuthContext()
@@ -78,17 +79,13 @@ export default function LoginPage() {
                 autoComplete="username"
               />
             </div>
-            <div>
-              <input
-                type="password"
-                className="input"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
+            <PasswordInput
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
 
             {error && (
               <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">

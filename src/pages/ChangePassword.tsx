@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthContext } from '../context/AuthContext'
 import DashboardLayout from '../components/layout/DashboardLayout'
+import PasswordInput from '../components/ui/PasswordInput'
 
 export default function ChangePassword() {
   const { profile } = useAuthContext()
@@ -72,21 +73,12 @@ export default function ChangePassword() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="label">Current Password</label>
-              <input type="password" className="input" required
-                value={currentPw} onChange={e => setCurrentPw(e.target.value)} />
-            </div>
-            <div>
-              <label className="label">New Password</label>
-              <input type="password" className="input" required minLength={6}
-                value={newPw} onChange={e => setNewPw(e.target.value)} />
-            </div>
-            <div>
-              <label className="label">Confirm New Password</label>
-              <input type="password" className="input" required
-                value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
-            </div>
+            <PasswordInput label="Current Password" required
+              value={currentPw} onChange={e => setCurrentPw(e.target.value)} />
+            <PasswordInput label="New Password" required minLength={6}
+              value={newPw} onChange={e => setNewPw(e.target.value)} />
+            <PasswordInput label="Confirm New Password" required
+              value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
             <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3 mt-2">
               {loading ? 'Updating…' : 'Update Password'}
             </button>

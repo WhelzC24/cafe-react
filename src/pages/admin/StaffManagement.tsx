@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
+import PasswordInput from '../../components/ui/PasswordInput'
 
 interface CreateStaffForm {
   fullname: string
@@ -105,10 +106,8 @@ export default function StaffManagement() {
               />
             </div>
             <div>
-              <input
-                className="input"
+              <PasswordInput
                 required
-                type="password"
                 minLength={6}
                 placeholder="Password *"
                 value={form.password}
