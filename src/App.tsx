@@ -8,7 +8,7 @@ import StaffManagement from './pages/admin/StaffManagement'
 import AdminSettings from './pages/admin/Settings'
 import StoreDashboard from './pages/staff/StoreDashboard'
 import ChangePassword from './pages/ChangePassword'
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles: string[] }) {
   const { user, profile, loading } = useAuthContext()
@@ -41,7 +41,6 @@ function AppRoutes() {
       <Route path="/admin/staff" element={<ProtectedRoute allowedRoles={['admin']}><StaffManagement /></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
-      <Analytics />
     </Routes>
   )
 }
@@ -52,6 +51,7 @@ export default function App() {
     <AuthContext.Provider value={auth}>
       <BrowserRouter>
         <AppRoutes />
+        <Analytics />
       </BrowserRouter>
     </AuthContext.Provider>
   )
