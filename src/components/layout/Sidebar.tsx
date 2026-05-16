@@ -13,6 +13,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { to: '/admin',        icon: '👥', label: 'User Management', roles: ['admin'] },
   { to: '/admin/staff',  icon: '➕', label: 'Add Staff',        roles: ['admin'] },
+  { to: '/admin/settings', icon: '⚙️', label: 'Store Settings', roles: ['admin'] },
   { to: '/dashboard',    icon: '📦', label: 'Store Dashboard',  roles: ['admin', 'staff'] },
 ]
 
