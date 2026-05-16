@@ -38,3 +38,6 @@ npm-debug.log*
 .opencode/
 .ocx/
 .playwright-cli/
+
+# Supabase CLI generated cache
+supabase/.temp/
