@@ -1,7 +1,7 @@
 // supabase/functions/create-staff/index.ts
 // Deploy with: supabase functions deploy create-staff
 //
-// This Edge Function runs with the SERVICE ROLE key and can create
+// This Edge Function runs with a service role key and can create
 // auth users — something the anon key cannot do from the browser.
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
@@ -46,9 +46,12 @@ serve(async (req: Request) => {
     }
 
     // Create the user using the service role client
+    const serviceRoleKey = Deno.env.get('SERVICE_ROLE_KEY')
+    if (!serviceRoleKey) throw new Error('Missing SERVICE_ROLE_KEY secret')
+
     const adminClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      serviceRoleKey
     )
 
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({

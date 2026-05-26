@@ -100,16 +100,34 @@ export default function AdminDashboard() {
   async function handleDeleteUser() {
     if (!deleteTarget) return
     setSaving(true)
-    const { error } = await supabase
-      .from('profiles')
-      .delete()
-      .eq('id', deleteTarget.id)
+    try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+      if (!accessToken) throw new Error('You must be signed in as admin to delete users.')
 
-    setSaving(false)
-    if (error) { setMsg('Error: ' + error.message); return }
-    setDeleteTarget(null)
-    setMsg(`User @${deleteTarget.username} deleted.`)
-    load()
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-staff`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ userId: deleteTarget.id }),
+      })
+
+      const body = await resp.json().catch(() => null)
+      setSaving(false)
+      if (!resp.ok) {
+        throw new Error(body?.error ?? 'Failed to delete user')
+      }
+
+      setDeleteTarget(null)
+      setMsg(`User @${deleteTarget.username} deleted.`)
+      load()
+    } catch (err: unknown) {
+      setSaving(false)
+      setMsg(err instanceof Error ? err.message : 'Failed to delete user')
+    }
   }
 
   function openEdit(user: Profile) {

@@ -113,7 +113,7 @@ supabase functions deploy create-staff
 
 The function:
 1. Verifies the caller is an authenticated admin
-2. Creates the Supabase Auth user using the service role key
+2. Creates the Supabase Auth user using the service role key stored as `SERVICE_ROLE_KEY`
 3. Inserts a profile row with `must_change_password: true`
 
 ---
