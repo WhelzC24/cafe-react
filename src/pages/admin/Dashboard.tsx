@@ -13,6 +13,8 @@ interface Stats {
   todayRevenue: number
 }
 
+const TEMP_PASSWORD = '123456'
+
 export default function AdminDashboard() {
   const [tab, setTab] = useState<'users' | 'orders'>('users')
   const [users, setUsers] = useState<Profile[]>([])
@@ -21,6 +23,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [loadingOrders, setLoadingOrders] = useState(false)
   const [resetTarget, setResetTarget] = useState<Profile | null>(null)
+  const [resetResultTarget, setResetResultTarget] = useState<Profile | null>(null)
   const [editTarget, setEditTarget] = useState<Profile | null>(null)
   const [editForm, setEditForm] = useState({ fullname: '', username: '', role: 'staff' })
   const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null)
@@ -86,15 +89,35 @@ export default function AdminDashboard() {
   async function handleResetPassword() {
     if (!resetTarget) return
     setSaving(true)
-    await supabase
-      .from('profiles')
-      .update({ must_change_password: true })
-      .eq('id', resetTarget.id)
+    try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+      if (!accessToken) throw new Error('You must be signed in as admin to reset passwords.')
 
-    setMsg(`Password reset flag set for @${resetTarget.username}. Staff will be prompted to change on next login.`)
-    setResetTarget(null)
-    setSaving(false)
-    load()
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/reset-staff-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ userId: resetTarget.id }),
+      })
+
+      const body = await resp.json().catch(() => null)
+      if (!resp.ok) {
+        throw new Error(body?.error ?? 'Failed to reset password')
+      }
+
+      setResetResultTarget(resetTarget)
+      setMsg(`Password reset to ${TEMP_PASSWORD} for @${resetTarget.username}.`)
+      setResetTarget(null)
+      load()
+    } catch (err: unknown) {
+      setMsg(err instanceof Error ? err.message : 'Failed to reset password')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleDeleteUser() {
@@ -405,6 +428,57 @@ export default function AdminDashboard() {
             <button onClick={handleResetPassword} disabled={saving} className="btn-danger">
               {saving ? 'Saving…' : 'Confirm Reset'}
             </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Reset Result Modal */}
+      <Modal
+        open={!!resetResultTarget}
+        onClose={() => setResetResultTarget(null)}
+        title="Password Reset Complete"
+        maxWidth="max-w-lg"
+      >
+        <div className="space-y-4 text-sm text-espresso-700 dark:text-espresso-100">
+          <div className="text-center">
+            <div className="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">✅</div>
+            <p className="text-espresso-700 dark:text-cream">
+              The staff account has been flagged to change its password on the next sign-in.
+            </p>
+          </div>
+
+          <div className="grid gap-3 rounded-2xl bg-cream/70 p-4 dark:bg-espresso-900/50">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-espresso-400">Full name</p>
+              <p className="font-medium text-espresso-900 dark:text-cream">{resetResultTarget?.fullname}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-espresso-400">Username</p>
+              <p className="font-medium text-espresso-900 dark:text-cream">@{resetResultTarget?.username}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-espresso-400">Role</p>
+              <p className="font-medium text-espresso-900 dark:text-cream capitalize">{resetResultTarget?.role}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-espresso-400">Password status</p>
+              <p className="font-medium text-amber-700 dark:text-amber-300">Must change password on next login</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-espresso-400">Temporary password</p>
+              <p className="font-mono font-semibold text-espresso-900 dark:text-cream">{TEMP_PASSWORD}</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+            <p className="font-medium">What to tell the staff member</p>
+            <p className="mt-1">
+              Have them sign in with their usual account, then update their password immediately when prompted.
+            </p>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setResetResultTarget(null)} className="btn-primary">Done</button>
           </div>
         </div>
       </Modal>
