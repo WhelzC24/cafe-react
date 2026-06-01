@@ -13,6 +13,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "marked": "^15.0.12",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",

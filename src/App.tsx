@@ -9,6 +9,7 @@ import AdminSettings from './pages/admin/Settings'
 import StoreDashboard from './pages/staff/StoreDashboard'
 import ChangePassword from './pages/ChangePassword'
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles: string[] }) {
   const { user, profile, loading } = useAuthContext()
@@ -52,6 +53,7 @@ export default function App() {
       <BrowserRouter>
         <AppRoutes />
         <Analytics />
+        <SpeedInsights />
       </BrowserRouter>
     </AuthContext.Provider>
   )
